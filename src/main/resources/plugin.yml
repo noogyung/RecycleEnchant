@@ -1,0 +1,10 @@
+name: Rechant
+version: '${project.version}'
+main: me.noogs.rechant.Rechant
+api-version: 1.18
+authors: [ Noogs ]
+description: Rechant Plugin
+commands:
+  rc:
+    description: Rechant Plugin Version
+    usage: /<command>
