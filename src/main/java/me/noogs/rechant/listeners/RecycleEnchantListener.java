@@ -24,49 +24,51 @@ public class RecycleEnchantListener implements Listener {
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             // inventory 를 모루에 들어있는 아이템으로 설정.
             AnvilInventory inventory = (AnvilInventory) event.getInventory();
-            // inventory 아이템 변수 지정
-
-
-            // 슬롯 확인
+            // 슬롯이 비었는지 확인
             if (inventory.getItem(2) != null && inventory.getItem(2).getType() != Material.AIR) ;
             else {
-                //inventory2 (result) 클릭시 결과, 필요 경험치 표시
+                //딜레이 : 없을 경우 result아이템 표시 안됨
                 Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                     @Override
                     public void run() {
+                        // 인챈트 추출할 아이템
                         ItemStack targetItem = inventory.getItem(0);
+                        // 인챈트를 넣을 아이템
                         ItemStack matter = inventory.getItem(1);
+                        // 인첸트 추출 아이템에 인챈트가 있는지 확인
                         if (targetItem != null && targetItem.getType() != Material.AIR && targetItem.getItemMeta().hasEnchants() != false) {
+                            //매체 아이템 확인
                             if (matter != null && matter.getType() != Material.AIR && matter.getType() == Material.WRITABLE_BOOK) {
-                                if (inventory.getItem(2) == null || inventory.getItem(2).getType() == Material.AIR) {
-                                    //가격 설정
-                                    inventory.setRepairCost(Rechant.getPlugin().getConfig().getInt("repairCost"));
-
-                                    //targetItem에서 result에 들어갈 인챈트 목록 가져오기
-                                    Map<Enchantment, Integer> targetEnchant = targetItem.getEnchantments();
-
-                                    ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
-
-                                    //인챈트 북에 targetItem의 meta데이터 중 인챈트 항목 붙이기
-                                    for (Map.Entry<Enchantment, Integer> mapEntry : targetEnchant.entrySet()) {
-                                        Enchantment enchantment = mapEntry.getKey();
-                                        Integer level = mapEntry.getValue();
-                                        EnchantmentStorageMeta esm = (EnchantmentStorageMeta) book.getItemMeta();
-                                        esm.setDisplayName(Rechant.getPlugin().getConfig().getString("EnchantBookName"));
-                                        esm.addStoredEnchant(enchantment, level, true);
-                                        book.setItemMeta(esm);
-                                    }
-                                    inventory.setItem(2, book);
-                                } else {
-                                    return;
+                                //가격 설정
+                                inventory.setRepairCost(Rechant.getPlugin().getConfig().getInt("repairCost"));
+                                //targetItem에서 result에 들어갈 인챈트 전체 가져오기
+                                Map<Enchantment, Integer> targetEnchant = targetItem.getEnchantments();
+                                //ResultItem 설정
+                                ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
+                                //ResultItem에 targetItem의 meta데이터 중 인챈트 항목 붙이기
+                                //
+                                for (Map.Entry<Enchantment, Integer> mapEntry : targetEnchant.entrySet()) {
+                                    //인챈트 이름
+                                    Enchantment enchantment = mapEntry.getKey();
+                                    //인챈트 레벨
+                                    Integer level = mapEntry.getValue();
+                                    //재 인챈트 가능한 ResultItem Meta
+                                    EnchantmentStorageMeta esm = (EnchantmentStorageMeta) book.getItemMeta();
+                                    //ResultItem 이름
+                                    esm.setDisplayName(Rechant.getPlugin().getConfig().getString("EnchantBookName"));
+                                    //ResultItem Meta + TargetItem Meta, 레벨 제한 - 해제
+                                    esm.addStoredEnchant(enchantment, level, true);
+                                    //ResultItem Meta를 ResultItem 에 적용
+                                    book.setItemMeta(esm);
                                 }
+                                //ResultItem 을 인벤토리에 적용
+                                inventory.setItem(2, book);
+                            } else {
+                                return;
                             }
                         }
-
                     }
                 }, 1);
-
-
             }
         }
     }

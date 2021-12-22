@@ -1,7 +1,6 @@
 package me.noogs.rechant;
 
 import me.noogs.rechant.listeners.RecycleEnchantListener;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class Rechant extends JavaPlugin {
@@ -19,9 +18,6 @@ public final class Rechant extends JavaPlugin {
         // Get Config.yml
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-        // Using Config - String Book = getConfig().getString("Book");
-        //                int needLevel = getConfig().getInt("needLevel");
-
 
         // Version Command
         getCommand("rc").setExecutor(new rcCommands());
