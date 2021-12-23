@@ -1,9 +1,15 @@
 package me.noogs.rechant;
 
 import me.noogs.rechant.listeners.RecycleEnchantListener;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 public final class Rechant extends JavaPlugin {
+
+    FileConfiguration config;
+    File cfile;
 
     private static Rechant plugin;
 
@@ -16,14 +22,21 @@ public final class Rechant extends JavaPlugin {
         plugin = this;
 
         // Get Config.yml
-        getConfig().options().copyDefaults();
-        saveDefaultConfig();
+        config = getConfig();
+        config.options().copyDefaults(true);
+        saveConfig();
+        cfile = new File(getDataFolder(),"config.yml");
 
-        // Version Command
+        //Command
         getCommand("rc").setExecutor(new rcCommands());
 
         //anvil Event
         getServer().getPluginManager().registerEvents(new RecycleEnchantListener(),this);
+
+    }
+
+    public void setupConfig() {
+        File resetFile = new File(getDataFolder(), "RESET.FILE");
 
     }
 

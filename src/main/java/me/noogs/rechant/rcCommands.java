@@ -12,7 +12,7 @@ import static org.bukkit.Bukkit.getLogger;
 
 public class rcCommands implements CommandExecutor {
 
-    Plugin plugin = Rechant.getPlugin(Rechant.class);
+    Plugin plugin = Rechant.getPlugin();
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -31,6 +31,13 @@ public class rcCommands implements CommandExecutor {
                         break;
                     case "help":
                         p.sendMessage(plugin.getConfig().getString("help"));
+                        break;
+                    case "reload":
+                        plugin.reloadConfig();
+                        plugin.onDisable();
+                        plugin.onEnable();
+
+                        sender.sendMessage(ChatColor.GREEN + "ReChant Plugin is reloaded!");
                     default:
                         p.sendMessage(plugin.getConfig().getString("whatsCommands"));
                         break;
@@ -45,7 +52,6 @@ public class rcCommands implements CommandExecutor {
         else {
             getLogger().info(plugin.getConfig().getString("notPlayer"));
         }
-
         return true;
     }
 }

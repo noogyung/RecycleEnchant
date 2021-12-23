@@ -1,5 +1,6 @@
 repairCost: 20
-#matterItem: WRITABLE_BOOK
+maxRepairCost: 3000
+matterItem: WRITABLE_BOOK
 
 
 #언어
@@ -7,6 +8,6 @@ notPlayer: "플레이어가 아닙니다."
 needCommandArg: "올바른 커맨드를 입력해주십시오."
 whatsCommands: "명령어 목록 확인 : /rc commands"
 help: "인챈트가 되어있는 아이템, 책과 깃펜 아이템을 모루에 넣어 인챈트를 추출할 수 있습니다."
-
+needCost: "레벨이 필요합니다."
 
 EnchantBookName: "재활용한 마법이 부여된 책"
