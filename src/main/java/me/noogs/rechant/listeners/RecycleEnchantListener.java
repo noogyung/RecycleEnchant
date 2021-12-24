@@ -1,6 +1,8 @@
 package me.noogs.rechant.listeners;
 
 import me.noogs.rechant.Rechant;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -9,22 +11,23 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 public class RecycleEnchantListener implements Listener {
     Plugin plugin = Rechant.getPlugin();
     Configuration config = plugin.getConfig();
-    private static final List<UUID> playersMessagedForEventList = new ArrayList<>();
+    private BukkitTask Task;
 
     @EventHandler
     public void onAnvilClick(PrepareAnvilEvent event) {
@@ -98,23 +101,35 @@ public class RecycleEnchantListener implements Listener {
                             if (inventory.getItem(2) != null && inventory.getRepairCost() >= 40 ){
                                 messagePlayerRepairCostTooExpensive(player, inventory.getRepairCost());
                             }
+                            else {
+                                stopMessage();
+                            }
                         }
                     }, 1L);
                 }
             }, 1);
         }
+
+    }
+
+    @EventHandler
+    public void closeAnvil(InventoryCloseEvent event){
+        if (event.getInventory().getType() == InventoryType.ANVIL) {
+            stopMessage();
+        }
     }
 
     private void messagePlayerRepairCostTooExpensive(Player player, int repairCost){
-        if(!playersMessagedForEventList.contains(player.getUniqueId())){
-            playersMessagedForEventList.add(player.getUniqueId());
-            String message = ">>>>>>>>>>" + ChatColor.RED + "RepairCost" . replace("RepairCost", repairCost + " ") + ChatColor.YELLOW + config.getString("needCost") + ChatColor.WHITE + "<<<<<<<<<<";
-            player.sendMessage("" + message);
+        String message = ">>>>>>>>>>" + ChatColor.RED + "RepairCost" . replace("RepairCost", repairCost + " ") + ChatColor.YELLOW + config.getString("needCost") + ChatColor.WHITE + "<<<<<<<<<<";
+        Task = Bukkit.getScheduler().runTaskTimer(plugin, () ->{
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(message));
+        }, 0L, 20L);
+    }
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () ->{
-                playersMessagedForEventList.remove(player.getUniqueId());
-            }, 2L);
-
+    private void stopMessage(){
+        if (Task != null){
+            Bukkit.getScheduler().cancelTasks(plugin);
+            Task = null;
         }
     }
 
