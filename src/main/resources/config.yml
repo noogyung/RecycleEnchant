@@ -1,6 +1,10 @@
 repairCost: 20
+ExpBottleCost: 1
+
+
 maxRepairCost: 3000
 matterItem: WRITABLE_BOOK
+
 
 
 #언어

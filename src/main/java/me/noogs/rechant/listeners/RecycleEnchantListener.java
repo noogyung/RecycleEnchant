@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,6 +19,7 @@ import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
@@ -94,6 +96,22 @@ public class RecycleEnchantListener implements Listener {
                             inventory.setItem(2,book);
                         }
                     }
+                    else if (targetItem != null && targetItem.getType() != Material.AIR && targetItem.getType() == Material.PLAYER_HEAD){
+                        int targetCount = targetItem.getAmount();
+                        ItemStack playerHead = new ItemStack(Material.PLAYER_HEAD, targetCount);
+
+                        inventory.setRepairCost(0);
+                        inventory.setItem(2, playerHead);
+                    }
+                    else if (targetItem != null && targetItem.getType() != Material.AIR && targetItem.getType() == Material.HONEY_BOTTLE){
+                        int targetAmount = targetItem.getAmount();
+                        int resultCost = targetAmount * plugin.getConfig().getInt("ExpBottleCost");
+
+                        ItemStack expPotion = new ItemStack(Material.EXPERIENCE_BOTTLE, targetAmount);
+
+                        inventory.setRepairCost(resultCost);
+                        inventory.setItem(2, expPotion);
+                    }
                     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                         @Override
                         public void run() {
@@ -132,7 +150,6 @@ public class RecycleEnchantListener implements Listener {
             Task = null;
         }
     }
-
 
     public ItemStack getMatterItemfromConfig() {
         String s = config.getString("matterItem");
